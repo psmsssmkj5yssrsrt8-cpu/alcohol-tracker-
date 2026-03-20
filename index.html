@@ -1,194 +1,178 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alcohol Tracker">
-<meta name="theme-color" content="#0d0f14">
-<meta name="description" content="週間アルコール摂取量を管理できるアプリ。140gの上限に対して毎日の摂取量を記録し、健康的な飲酒習慣をサポートします。">
-<link rel="apple-touch-icon" href="icons/icon-192x192.png">
-<link rel="icon" type="image/png" href="icons/icon-192x192.png">
-<link rel="manifest" href="manifest.json">
-<title>週間アルコール管理</title>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0d0f14;
-    --surface: #161920;
-    --surface2: #1e222e;
-    --border: #2a2f3e;
-    --accent: #e8c84a;
-    --accent2: #e87a4a;
-    --safe: #4ae8a0;
-    --danger: #e84a4a;
-    --text: #e8eaf0;
-    --muted: #6b718a;
-    --max: 140;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>週間アルコール管理</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --surface: #161920;
+            --accent: #e8c84a;
+            --safe: #4ae8a0;
+            --danger: #e84a4a;
+            --text: #e8eaf0;
+            --muted: #6b718a;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            color: var(--accent);
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .limit-info {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+        }
+        .gauge-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .total-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            line-height: 1;
+        }
+        .unit { font-size: 1rem; color: var(--muted); }
+        .progress-bar {
+            height: 12px;
+            background: #2a2f3e;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        #bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--safe), var(--accent));
+            transition: width 0.5s ease;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            flex: 1;
+            background: #1e222e;
+            border: 1px solid #2a2f3e;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            outline: none;
+        }
+        button {
+            background: var(--accent);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .history {
+            border-top: 1px solid #2a2f3e;
+            padding-top: 15px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ALCOHOL TRACKER</h1>
+        <p class="limit-info">週の上限: 140g (1日平均20g)</p>
+        
+        <div class="gauge-area">
+            <div class="total-val" id="total-display">0<span class="unit">g</span></div>
+            <div class="progress-bar">
+                <div id="bar-fill"></div>
+            </div>
+            <p id="status-msg" style="font-size: 0.9rem; color: var(--safe);">今週はあと 140g 飲めます</p>
+        </div>
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+        <div class="input-group">
+            <input type="number" id="amount" placeholder="今日の摂取量 (g)" inputmode="decimal">
+            <button onclick="addEntry()">記録</button>
+        </div>
 
-  html, body {
-    width: 100%;
-    height: 100%;
-  }
+        <div class="history" id="history-list">
+            <p style="font-size: 0.8rem; margin-bottom: 10px;">最近の記録</p>
+        </div>
+        <button onclick="resetData()" style="background: transparent; color: var(--danger); font-size: 0.7rem; margin-top: 20px; width: 100%;">データをリセット</button>
+    </div>
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 60px;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-  }
+    <script>
+        let total = parseFloat(localStorage.getItem('alc_total')) || 0;
+        const limit = 140;
 
-  header {
-    width: 100%;
-    max-width: 420px;
-    margin-bottom: 28px;
-    text-align: center;
-  }
-  header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.6rem;
-    letter-spacing: .12em;
-    color: var(--accent);
-    line-height: 1;
-  }
-  header p {
-    font-size: .78rem;
-    color: var(--muted);
-    margin-top: 4px;
-    letter-spacing: .05em;
-  }
-  .week-label {
-    display: inline-block;
-    margin-top: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 14px;
-    font-size: .78rem;
-    color: var(--muted);
-    letter-spacing: .04em;
-  }
+        function updateDisplay() {
+            document.getElementById('total-display').childNodes[0].nodeValue = total.toFixed(1);
+            const percent = Math.min((total / limit) * 100, 100);
+            document.getElementById('bar-fill').style.width = percent + '%';
+            
+            const remaining = limit - total;
+            const msg = document.getElementById('status-msg');
+            if (remaining >= 0) {
+                msg.innerText = `今週はあと ${remaining.toFixed(1)}g 飲めます`;
+                msg.style.color = 'var(--safe)';
+            } else {
+                msg.innerText = `上限を ${Math.abs(remaining).toFixed(1)}g 超えています`;
+                msg.style.color = 'var(--danger)';
+            }
+            localStorage.setItem('alc_total', total);
+        }
 
-  .gauge-wrap {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 20px 20px;
-    margin-bottom: 20px;
-  }
-  .gauge-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 14px;
-  }
-  .gauge-header .label {
-    font-size: .75rem;
-    color: var(--muted);
-    letter-spacing: .06em;
-  }
-  .gauge-header .total-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.8rem;
-    line-height: 1;
-    color: var(--text);
-    transition: color .4s;
-  }
-  .gauge-header .total-val span {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: .9rem;
-    color: var(--muted);
-    margin-left: 3px;
-  }
-  .bar-track {
-    height: 18px;
-    background: var(--surface2);
-    border-radius: 99px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    background: linear-gradient(90deg, var(--safe), var(--accent));
-    transition: width .6s cubic-bezier(.4,0,.2,1), background .4s;
-    min-width: 0;
-  }
-  .bar-fill.warning { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .bar-fill.over    { background: linear-gradient(90deg, var(--accent2), var(--danger)); }
+        function addEntry() {
+            const val = parseFloat(document.getElementById('amount').value);
+            if (!isNaN(val)) {
+                total += val;
+                updateDisplay();
+                document.getElementById('amount').value = '';
+                
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `<span>${new Date().toLocaleDateString()}</span><span>${val}g</span>`;
+                document.getElementById('history-list').appendChild(item);
+            }
+        }
 
-  .gauge-sub {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: .73rem;
-    color: var(--muted);
-  }
-  .remaining-badge {
-    margin-top: 16px;
-    background: var(--surface2);
-    border-radius: 10px;
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid var(--border);
-  }
-  .remaining-badge .r-label { font-size: .75rem; color: var(--muted); }
-  .remaining-badge .r-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    color: var(--safe);
-    transition: color .4s;
-  }
-  .remaining-badge .r-val.warning { color: var(--accent); }
-  .remaining-badge .r-val.over    { color: var(--danger); }
+        function resetData() {
+            if(confirm('記録をすべてリセットしますか？')) {
+                total = 0;
+                localStorage.removeItem('alc_total');
+                location.reload();
+            }
+        }
 
-  .card {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 20px;
-    margin-bottom: 16px;
-  }
-  .card h2 {
-    font-size: .8rem;
-    letter-spacing: .1em;
-    color: var(--muted);
-    margin-bottom: 16px;
-    text-transform: uppercase;
-  }
-
-  .row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-end; }
-  .field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .field label { font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
-  .field input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    padding: 10px 12px;
-    width: 100%;
-    outline: none;
-    transition: border-color .2s;
-    letter-spacing: .05em;
-  }
-  .field input:focus { border-color*
-
+        updateDisplay();
+    </script>
+</body>
+</html>
