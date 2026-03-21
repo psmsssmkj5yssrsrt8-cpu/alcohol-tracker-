@@ -7,479 +7,71 @@
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #161920;
-    --surface2: #1e222e;
-    --border: #2a2f3e;
-    --accent: #e8c84a;
-    --accent2: #e87a4a;
-    --safe: #4ae8a0;
-    --danger: #e84a4a;
-    --text: #e8eaf0;
-    --muted: #6b718a;
-    --max: 140;
+    --bg: #0d0f14; --surface: #161920; --surface2: #1e222e; --border: #2a2f3e;
+    --accent: #e8c84a; --accent2: #e87a4a; --safe: #4ae8a0; --danger: #e84a4a;
+    --text: #e8eaf0; --muted: #6b718a; --max: 140;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 16px 60px;
+    background: var(--bg); color: var(--text); font-family: 'Zen Kaku Gothic New', sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 24px 16px 60px;
   }
+  header { width: 100%; max-width: 420px; margin-bottom: 28px; text-align: center; }
+  header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; letter-spacing: .12em; color: var(--accent); line-height: 1; }
+  header p { font-size: .78rem; color: var(--muted); margin-top: 4px; letter-spacing: .05em; }
+  .week-label { display: inline-block; margin-top: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 4px 14px; font-size: .78rem; color: var(--muted); }
 
-  /* ── ヘッダー ── */
-  header {
-    width: 100%;
-    max-width: 420px;
-    margin-bottom: 28px;
-    text-align: center;
-  }
-  header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.6rem;
-    letter-spacing: .12em;
-    color: var(--accent);
-    line-height: 1;
-  }
-  header p {
-    font-size: .78rem;
-    color: var(--muted);
-    margin-top: 4px;
-    letter-spacing: .05em;
-  }
-  .week-label {
-    display: inline-block;
-    margin-top: 10px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 14px;
-    font-size: .78rem;
-    color: var(--muted);
-    letter-spacing: .04em;
-  }
-
-  /* ── ゲージ ── */
-  .gauge-wrap {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px 20px 20px;
-    margin-bottom: 20px;
-  }
-  .gauge-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 14px;
-  }
-  .gauge-header .label {
-    font-size: .75rem;
-    color: var(--muted);
-    letter-spacing: .06em;
-  }
-  .gauge-header .total-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.8rem;
-    line-height: 1;
-    color: var(--text);
-    transition: color .4s;
-  }
-  .gauge-header .total-val span {
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: .9rem;
-    color: var(--muted);
-    margin-left: 3px;
-  }
-  .bar-track {
-    height: 18px;
-    background: var(--surface2);
-    border-radius: 99px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    background: linear-gradient(90deg, var(--safe), var(--accent));
-    transition: width .6s cubic-bezier(.4,0,.2,1), background .4s;
-    min-width: 0;
-  }
+  .gauge-wrap { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px 20px; margin-bottom: 20px; }
+  .gauge-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 14px; }
+  .gauge-header .label { font-size: .75rem; color: var(--muted); }
+  .gauge-header .total-val { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; line-height: 1; }
+  .gauge-header .total-val span { font-size: .9rem; color: var(--muted); margin-left: 3px; }
+  .bar-track { height: 18px; background: var(--surface2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--safe), var(--accent)); transition: width .6s ease; }
   .bar-fill.warning { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .bar-fill.over    { background: linear-gradient(90deg, var(--accent2), var(--danger)); }
-
-  .gauge-sub {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: .73rem;
-    color: var(--muted);
-  }
-  .remaining-badge {
-    margin-top: 16px;
-    background: var(--surface2);
-    border-radius: 10px;
-    padding: 10px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid var(--border);
-  }
-  .remaining-badge .r-label { font-size: .75rem; color: var(--muted); }
-  .remaining-badge .r-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    color: var(--safe);
-    transition: color .4s;
-  }
+  .bar-fill.over { background: linear-gradient(90deg, var(--accent2), var(--danger)); }
+  .remaining-badge { margin-top: 16px; background: var(--surface2); border-radius: 10px; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+  .remaining-badge .r-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--safe); }
   .remaining-badge .r-val.warning { color: var(--accent); }
-  .remaining-badge .r-val.over    { color: var(--danger); }
+  .remaining-badge .r-val.over { color: var(--danger); }
 
-  /* ── 入力フォーム ── */
-  .card {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 20px;
-    margin-bottom: 16px;
-  }
-  .card h2 {
-    font-size: .8rem;
-    letter-spacing: .1em;
-    color: var(--muted);
-    margin-bottom: 16px;
-    text-transform: uppercase;
-  }
-
-  .row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-end; }
-  .field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .field label { font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
-  .field input {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    padding: 10px 12px;
-    width: 100%;
-    outline: none;
-    transition: border-color .2s;
-    letter-spacing: .05em;
-  }
-  .field input:focus { border-color: var(--accent); }
-  .field input::placeholder { color: var(--muted); opacity: .5; }
-
-  /* プリセット */
-  .preset-wrap { margin-bottom: 14px; }
-  .preset-wrap label { font-size: .72rem; color: var(--muted); display: block; margin-bottom: 6px; letter-spacing: .04em; }
-  .presets { display: flex; flex-wrap: wrap; gap: 6px; }
-  .preset-btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: .72rem;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background .18s, border-color .18s;
-    white-space: nowrap;
-  }
-  .preset-btn:hover { background: var(--border); border-color: var(--accent); }
-
-  /* 計算結果 */
-  .calc-result {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: .78rem;
-    color: var(--muted);
-    margin-bottom: 14px;
-    min-height: 36px;
-    letter-spacing: .03em;
-    transition: color .2s;
-  }
-  .calc-result .val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    color: var(--accent);
-    margin-right: 3px;
-  }
-
-  /* ボタン */
-  .btn-add {
-    width: 100%;
-    background: var(--accent);
-    border: none;
-    border-radius: 10px;
-    color: #0d0f14;
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 13px;
-    cursor: pointer;
-    letter-spacing: .06em;
-    transition: opacity .18s, transform .12s;
-  }
-  .btn-add:hover { opacity: .85; }
-  .btn-add:active { transform: scale(.98); }
-
-  /* ── 履歴 ── */
-  .history-list { display: flex; flex-direction: column; gap: 8px; }
-  .hist-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    animation: slideIn .25s ease;
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .hist-info { font-size: .78rem; color: var(--muted); }
-  .hist-info strong { color: var(--text); font-weight: 700; }
-  .hist-g {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    color: var(--accent2);
-  }
-  .hist-del {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: .85rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: color .18s, background .18s;
-    margin-left: 10px;
-  }
-  .hist-del:hover { color: var(--danger); background: rgba(232,74,74,.1); }
-  .empty-msg {
-    text-align: center;
-    color: var(--muted);
-    font-size: .8rem;
-    padding: 16px 0;
-  }
-
-  /* ── リセット ── */
-  .reset-area {
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-    margin-top: 8px;
-  }
-  .btn-reset {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'Zen Kaku Gothic New', sans-serif;
-    font-size: .8rem;
-    padding: 9px 24px;
-    cursor: pointer;
-    letter-spacing: .06em;
-    transition: border-color .18s, color .18s;
-  }
-  .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
-
-  /* ── 休肝日カレンダー ── */
-  .kyukan-wrap {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 20px;
-    margin-bottom: 16px;
-  }
-  .kyukan-wrap h2 {
-    font-size: .8rem;
-    letter-spacing: .1em;
-    color: var(--muted);
-    margin-bottom: 14px;
-    text-transform: uppercase;
-  }
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .cal-day {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .cal-day .dow {
-    font-size: .65rem;
-    color: var(--muted);
-    letter-spacing: .02em;
-  }
+  .kyukan-wrap { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; }
+  .kyukan-wrap h2 { font-size: .8rem; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 14px; }
+  .cal-day { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .cal-day .dow { font-size: .65rem; color: var(--muted); }
   .cal-day .dow.sun { color: #e87a7a; }
   .cal-day .dow.sat { color: #7ab4e8; }
-  .cal-day .day-btn {
-    width: 100%;
-    aspect-ratio: 1;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background .18s, border-color .18s, color .18s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-  .cal-day .day-btn.today {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .cal-day .day-btn.future {
-    opacity: .35;
-    cursor: default;
-    pointer-events: none;
-  }
-  .cal-day .day-btn.kyukan {
-    background: rgba(74,232,160,.15);
-    border-color: var(--safe);
-    color: var(--safe);
-  }
-  .cal-day .day-btn.kyukan::after {
-    content: '🌙';
-    position: absolute;
-    bottom: 1px;
-    right: 2px;
-    font-size: .55rem;
-    line-height: 1;
-  }
-  .kyukan-status {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .kyukan-status .ks-label { font-size: .75rem; color: var(--muted); }
-  .kyukan-status .ks-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.8rem;
-    color: var(--safe);
-    transition: color .3s;
-  }
-  .kyukan-status .ks-val.done { color: var(--accent); }
-  .kyukan-status .ks-val.clear { color: var(--safe); }
+  .day-btn { width: 100%; aspect-ratio: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'Bebas Neue', sans-serif; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; }
+  .day-btn.today { border-color: var(--accent); color: var(--accent); }
+  .day-btn.future { opacity: .35; pointer-events: none; }
+  .day-btn.kyukan { background: rgba(74,232,160,.15); border-color: var(--safe); color: var(--safe); }
+  .day-btn.kyukan::after { content: '🌙'; position: absolute; bottom: 1px; right: 2px; font-size: .55rem; }
 
-  /* ── 目安マトリクス ── */
-  .matrix-wrap {
-    width: 100%;
-    max-width: 420px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 20px;
-    margin-bottom: 16px;
-  }
-  .matrix-wrap h2 {
-    font-size: .8rem;
-    letter-spacing: .1em;
-    color: var(--muted);
-    margin-bottom: 14px;
-    text-transform: uppercase;
-  }
-  .matrix-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: .82rem;
-  }
-  .matrix-table th {
-    background: var(--surface2);
-    color: var(--muted);
-    font-weight: 400;
-    font-size: .7rem;
-    letter-spacing: .06em;
-    padding: 8px 10px;
-    text-align: center;
-    border: 1px solid var(--border);
-  }
-  .matrix-table th.header-left { text-align: left; }
-  .matrix-table td {
-    padding: 9px 10px;
-    border: 1px solid var(--border);
-    text-align: center;
-    vertical-align: middle;
-  }
-  .matrix-table td.drink-label {
-    text-align: left;
-    color: var(--muted);
-    font-size: .75rem;
-    background: var(--surface2);
-    white-space: nowrap;
-  }
-  .matrix-table td.drink-label strong {
-    display: block;
-    color: var(--text);
-    font-size: .85rem;
-    font-weight: 700;
-  }
-  .matrix-table .ml-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.25rem;
-    letter-spacing: .04em;
-  }
-  .matrix-table .ml-val.avg { color: var(--accent); }
-  .matrix-table .ml-val.max { color: var(--accent2); }
-  .matrix-table .ml-unit {
-    font-size: .65rem;
-    color: var(--muted);
-    display: block;
-    margin-top: -2px;
-  }
-  .matrix-note {
-    margin-top: 10px;
-    font-size: .68rem;
-    color: var(--muted);
-    letter-spacing: .03em;
-    line-height: 1.6;
-  }
+  .card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; }
+  .card h2 { font-size: .8rem; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; }
+  .row { display: flex; gap: 12px; margin-bottom: 12px; }
+  .field { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: .72rem; color: var(--muted); }
+  .field input { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; padding: 10px; width: 100%; outline: none; }
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .preset-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: .72rem; padding: 5px 10px; cursor: pointer; }
+  .calc-result { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: .78rem; color: var(--muted); margin-bottom: 14px; }
+  .calc-result .val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent); }
+  .btn-add { width: 100%; background: var(--accent); border: none; border-radius: 10px; color: #0d0f14; font-size: 1rem; font-weight: 700; padding: 13px; cursor: pointer; }
+  
+  .history-list { display: flex; flex-direction: column; gap: 8px; }
+  .hist-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+  .hist-g { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: var(--accent2); }
+  .hist-del { background: none; border: none; color: var(--muted); cursor: pointer; margin-left: 10px; }
 
-  /* 警告バナー */
-  .banner {
-    width: 100%;
-    max-width: 420px;
-    background: rgba(232,74,74,.12);
-    border: 1px solid var(--danger);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: .8rem;
-    color: var(--danger);
-    text-align: center;
-    margin-bottom: 16px;
-    display: none;
-    letter-spacing: .03em;
-  }
+  .matrix-wrap { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px 20px; margin-bottom: 16px; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .matrix-table th, .matrix-table td { border: 1px solid var(--border); padding: 9px; text-align: center; }
+  .matrix-table td.drink-label { text-align: left; background: var(--surface2); }
+
+  .btn-reset { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-size: .8rem; padding: 9px 24px; cursor: pointer; width: 100%; max-width: 420px; margin-top: 8px; }
+  .banner { width: 100%; max-width: 420px; background: rgba(232,74,74,.12); border: 1px solid var(--danger); border-radius: 10px; padding: 12px; color: var(--danger); text-align: center; margin-bottom: 16px; display: none; }
   .banner.show { display: block; }
 </style>
 </head>
@@ -487,23 +79,18 @@
 
 <header>
   <h1>ALCOHOL TRACKER</h1>
-  <p>週間純アルコール量管理 / MAX 140g</p>
+  <p>7日間 純アルコール量管理 / MAX 140g</p>
   <span class="week-label" id="weekLabel"></span>
 </header>
 
-<div class="banner" id="banner">⚠️ 今週の上限 140g を超えています！</div>
+<div class="banner" id="banner">⚠️ 期間上限 140g を超えています！</div>
 
 <div class="gauge-wrap">
   <div class="gauge-header">
-    <div class="label">今週の摂取量</div>
+    <div class="label">現在の摂取量</div>
     <div class="total-val" id="totalVal">0<span>g</span></div>
   </div>
-  <div class="bar-track">
-    <div class="bar-fill" id="barFill" style="width:0%"></div>
-  </div>
-  <div class="gauge-sub">
-    <span>0g</span><span>70g</span><span>140g</span>
-  </div>
+  <div class="bar-track"><div class="bar-fill" id="barFill" style="width:0%"></div></div>
   <div class="remaining-badge">
     <span class="r-label">あと飲める量</span>
     <span class="r-val" id="remainVal">140<small style="font-size:.7rem;font-family:sans-serif"> g</small></span>
@@ -511,171 +98,90 @@
 </div>
 
 <div class="kyukan-wrap">
-  <h2>休肝日カレンダー（週2日目標）</h2>
+  <h2>休肝日（7日間で2日目標）</h2>
   <div class="cal-grid" id="calGrid"></div>
   <div class="kyukan-status">
-    <span class="ks-label">あと必要な休肝日</span>
+    <span class="ks-label" id="kyukanStatus">あと必要な休肝日</span>
     <span class="ks-val" id="kyukanVal">—</span>
   </div>
 </div>
 
 <div class="card">
   <h2>今飲むお酒を記録</h2>
-
-  <div class="preset-wrap">
-    <label>プリセット</label>
-    <div class="presets">
-      <button class="preset-btn" onclick="applyPreset(350,5)">ビール 350ml 5%</button>
-      <button class="preset-btn" onclick="applyPreset(500,5)">ビール 500ml 5%</button>
-      <button class="preset-btn" onclick="applyPreset(180,15)">日本酒 1合 15%</button>
-      <button class="preset-btn" onclick="applyPreset(90,40)">ウイスキー 90ml 40%</button>
-      <button class="preset-btn" onclick="applyPreset(150,12)">ワイン 150ml 12%</button>
-      <button class="preset-btn" onclick="applyPreset(350,5)">チューハイ 350ml 5%</button>
-      <button class="preset-btn" onclick="applyPreset(350,9)">ストロング 350ml 9%</button>
-    </div>
+  <div class="presets">
+    <button class="preset-btn" onclick="applyPreset(350,5)">ビール350ml 5%</button>
+    <button class="preset-btn" onclick="applyPreset(500,5)">ビール500ml 5%</button>
+    <button class="preset-btn" onclick="applyPreset(180,15)">日本酒1合 15%</button>
+    <button class="preset-btn" onclick="applyPreset(150,12)">ワイン150ml 12%</button>
+    <button class="preset-btn" onclick="applyPreset(350,9)">ストロング350ml 9%</button>
   </div>
-
   <div class="row">
-    <div class="field">
-      <label>量 (ml)</label>
-      <input type="number" id="mlInput" placeholder="350" min="0" oninput="updateCalc()">
-    </div>
-    <div class="field">
-      <label>アルコール度数 (%)</label>
-      <input type="number" id="pctInput" placeholder="5" min="0" max="100" step="0.1" oninput="updateCalc()">
-    </div>
+    <div class="field"><label>量 (ml)</label><input type="number" id="mlInput" placeholder="350" oninput="updateCalc()"></div>
+    <div class="field"><label>度数 (%)</label><input type="number" id="pctInput" placeholder="5" step="0.1" oninput="updateCalc()"></div>
   </div>
-
   <div class="calc-result" id="calcResult">量と度数を入力してください</div>
-
   <button class="btn-add" onclick="addDrink()">＋ 記録する</button>
 </div>
 
 <div class="card">
-  <h2>今週の記録</h2>
-  <div class="history-list" id="histList">
-    <p class="empty-msg">まだ記録がありません</p>
-  </div>
+  <h2>今回の記録</h2>
+  <div class="history-list" id="histList"></div>
 </div>
 
 <div class="matrix-wrap">
-  <h2>1日の純アルコール目安量</h2>
+  <h2>1日の目安量</h2>
   <table class="matrix-table">
-    <thead>
-      <tr>
-        <th class="header-left">お酒の種類</th>
-        <th>平均 <span style="color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:1rem">20g</span></th>
-        <th>MAX <span style="color:var(--accent2);font-family:'Bebas Neue',sans-serif;font-size:1rem">40g</span></th>
-      </tr>
-    </thead>
+    <thead><tr><th>種類</th><th>平均20g</th><th>MAX40g</th></tr></thead>
     <tbody>
-      <tr>
-        <td class="drink-label"><strong>ストロング系</strong>9%</td>
-        <td><span class="ml-val avg">278</span><span class="ml-unit">ml</span></td>
-        <td><span class="ml-val max">556</span><span class="ml-unit">ml</span></td>
-      </tr>
-      <tr>
-        <td class="drink-label"><strong>焼酎</strong>25%</td>
-        <td><span class="ml-val avg">100</span><span class="ml-unit">ml</span></td>
-        <td><span class="ml-val max">200</span><span class="ml-unit">ml</span></td>
-      </tr>
+      <tr><td class="drink-label"><strong>ストロング</strong>9%</td><td>278ml</td><td>556ml</td></tr>
+      <tr><td class="drink-label"><strong>焼酎</strong>25%</td><td>100ml</td><td>200ml</td></tr>
     </tbody>
   </table>
-  <p class="matrix-note">※ 純アルコール量(g) ＝ ml × 度数÷100 × 0.8　／　平均20g・MAX40g/日が目安</p>
 </div>
 
-<div class="reset-area">
-  <button class="btn-reset" onclick="resetWeek()">🔄 今週をリセット</button>
-</div>
+<button class="btn-reset" onclick="resetWeek()">🔄 今から1週間を開始</button>
 
 <script>
 const MAX = 140;
 const KYUKAN_TARGET = 2;
-const STORE_KEY = 'sake_tracker_v1';
+const STORE_KEY = 'sake_tracker_dynamic_v1';
 const DOW_LABELS = ['月','火','水','木','金','土','日'];
-
-function getWeekKey() {
-  const now = new Date();
-  const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-  const day = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 1 - day); // 月曜始まり
-  return `week_${d.toISOString().slice(0,10)}`;
-}
-
-function getMonday() {
-  const now = new Date();
-  const day = now.getDay() || 7;
-  const mon = new Date(now);
-  mon.setHours(0,0,0,0);
-  mon.setDate(now.getDate() + 1 - day);
-  return mon;
-}
 
 function toDateStr(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 function loadData() {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; }
 }
 
-function saveData(data) {
-  localStorage.setItem(STORE_KEY, JSON.stringify(data));
-}
+function saveData(data) { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
 
-function getCurrentRecords() {
+function getStartDate() {
   const data = loadData();
-  const key = getWeekKey();
-  return data[key] || [];
-}
-
-function saveRecords(records) {
-  const data = loadData();
-  data[getWeekKey()] = records;
-  saveData(data);
-}
-
-function getKyukanDays() {
-  const data = loadData();
-  const key = getWeekKey() + '_kyukan';
-  return data[key] || [];
-}
-
-function saveKyukanDays(days) {
-  const data = loadData();
-  data[getWeekKey() + '_kyukan'] = days;
-  saveData(data);
-}
-
-function toggleKyukan(dateStr) {
-  const days = getKyukanDays();
-  const idx = days.indexOf(dateStr);
-  if (idx >= 0) {
-    days.splice(idx, 1);
-  } else {
-    days.push(dateStr);
+  if (!data.start_date) {
+    data.start_date = toDateStr(new Date());
+    saveData(data);
   }
-  saveKyukanDays(days);
-  render();
+  return new Date(data.start_date);
 }
 
-function calcG(ml, pct) {
-  return ml * (pct / 100) * 0.8;
+function toggleKyukan(ds) {
+  const data = loadData();
+  data.kyukan = data.kyukan || [];
+  const idx = data.kyukan.indexOf(ds);
+  if (idx >= 0) data.kyukan.splice(idx, 1); else data.kyukan.push(ds);
+  saveData(data); render();
 }
 
 function updateCalc() {
   const ml = parseFloat(document.getElementById('mlInput').value);
   const pct = parseFloat(document.getElementById('pctInput').value);
   const el = document.getElementById('calcResult');
-  if (isNaN(ml) || isNaN(pct) || ml <= 0 || pct < 0) {
-    el.innerHTML = '量と度数を入力してください';
-    return;
-  }
-  const g = calcG(ml, pct).toFixed(1);
-  el.innerHTML = `この一杯の純アルコール量：<span class="val">${g}</span>g`;
+  if (ml > 0 && pct >= 0) {
+    const g = (ml * pct / 100 * 0.8).toFixed(1);
+    el.innerHTML = `純アルコール量：<span class="val">${g}</span>g`;
+  } else { el.innerHTML = '量と度数を入力してください'; }
 }
 
 function applyPreset(ml, pct) {
@@ -687,115 +193,83 @@ function applyPreset(ml, pct) {
 function addDrink() {
   const ml = parseFloat(document.getElementById('mlInput').value);
   const pct = parseFloat(document.getElementById('pctInput').value);
-  if (isNaN(ml) || isNaN(pct) || ml <= 0 || pct < 0) {
-    alert('量と度数を正しく入力してください');
-    return;
-  }
-  const g = calcG(ml, pct);
-  const records = getCurrentRecords();
-  records.push({ ml, pct, g: parseFloat(g.toFixed(2)), ts: Date.now() });
-  saveRecords(records);
+  if (!(ml > 0 && pct >= 0)) return;
+  const data = loadData();
+  data.records = data.records || [];
+  data.records.push({ ml, pct, g: ml * pct / 100 * 0.8, ts: Date.now() });
+  saveData(data);
   document.getElementById('mlInput').value = '';
   document.getElementById('pctInput').value = '';
-  document.getElementById('calcResult').innerHTML = '量と度数を入力してください';
   render();
 }
 
 function deleteDrink(idx) {
-  const records = getCurrentRecords();
-  records.splice(idx, 1);
-  saveRecords(records);
-  render();
+  const data = loadData();
+  data.records.splice(idx, 1);
+  saveData(data); render();
 }
 
 function resetWeek() {
-  if (!confirm('今週の記録をすべてリセットしますか？')) return;
-  const data = loadData();
-  delete data[getWeekKey()];
-  delete data[getWeekKey() + '_kyukan'];
-  saveData(data);
-  render();
+  if (!confirm('今から新しい1週間を開始しますか？（これまでの記録は消去されます）')) return;
+  const data = { start_date: toDateStr(new Date()), records: [], kyukan: [] };
+  saveData(data); render();
 }
 
 function render() {
-  const records = getCurrentRecords();
+  const data = loadData();
+  const startDate = getStartDate();
+  const records = data.records || [];
+  const kyukanDays = data.kyukan || [];
   const total = records.reduce((s, r) => s + r.g, 0);
   const remain = MAX - total;
-  const pct = Math.min(total / MAX * 100, 100);
+  const todayStr = toDateStr(new Date());
 
+  // 表示更新
   document.getElementById('totalVal').innerHTML = `${total.toFixed(1)}<span>g</span>`;
+  const pct = Math.min(total / MAX * 100, 100);
   const fill = document.getElementById('barFill');
   fill.style.width = pct + '%';
   fill.className = 'bar-fill' + (pct >= 100 ? ' over' : pct >= 70 ? ' warning' : '');
 
   const rv = document.getElementById('remainVal');
-  const remStr = remain > 0 ? `${remain.toFixed(1)}<small style="font-size:.7rem;font-family:sans-serif"> g</small>` : `<span style="font-size:1rem">超過 ${Math.abs(remain).toFixed(1)}g</span>`;
-  rv.innerHTML = remStr;
-  rv.className = 'r-val' + (remain <= 0 ? ' over' : remain < 42 ? ' warning' : '');
-
+  rv.innerHTML = remain > 0 ? `${remain.toFixed(1)}<small> g</small>` : `超過 ${Math.abs(remain).toFixed(1)}g`;
+  rv.className = 'r-val' + (remain <= 0 ? ' over' : remain < 40 ? ' warning' : '');
   document.getElementById('banner').className = 'banner' + (total > MAX ? ' show' : '');
 
-  const key = getWeekKey();
-  const monday = key.replace('week_', '');
-  const mon = new Date(monday);
-  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  const endDate = new Date(startDate); endDate.setDate(startDate.getDate() + 6);
   const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
-  document.getElementById('weekLabel').textContent = `今週 ${fmt(mon)} 〜 ${fmt(sun)}`;
+  document.getElementById('weekLabel').textContent = `${fmt(startDate)} 〜 ${fmt(endDate)}`;
 
-  const kyukanDays = getKyukanDays();
-  const todayStr = toDateStr(new Date());
-  const monDate = getMonday();
+  // カレンダー生成
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
   for (let i = 0; i < 7; i++) {
-    const d = new Date(monDate);
-    d.setDate(monDate.getDate() + i);
+    const d = new Date(startDate); d.setDate(startDate.getDate() + i);
     const ds = toDateStr(d);
-    const isToday = ds === todayStr;
-    const isFuture = ds > todayStr;
     const isKyukan = kyukanDays.includes(ds);
-    const dowClass = i === 5 ? 'sat' : i === 6 ? 'sun' : '';
-    let btnClass = 'day-btn';
-    if (isKyukan) btnClass += ' kyukan';
-    else if (isToday) btnClass += ' today';
-    else if (isFuture) btnClass += ' future';
+    const isToday = ds === todayStr;
+    const isFuture = d > new Date() && !isToday;
+    const dayLabel = DOW_LABELS[(d.getDay() + 6) % 7];
+    const dowClass = d.getDay() === 0 ? 'sun' : d.getDay() === 6 ? 'sat' : '';
     grid.innerHTML += `
       <div class="cal-day">
-        <span class="dow ${dowClass}">${DOW_LABELS[i]}</span>
-        <button class="${btnClass}" onclick="toggleKyukan('${ds}')">${d.getDate()}</button>
+        <span class="dow ${dowClass}">${dayLabel}</span>
+        <button class="day-btn ${isKyukan?'kyukan':''} ${isToday?'today':''} ${isFuture?'future':''}" onclick="toggleKyukan('${ds}')">${d.getDate()}</button>
       </div>`;
   }
 
   const done = kyukanDays.length;
   const need = Math.max(0, KYUKAN_TARGET - done);
   const ksVal = document.getElementById('kyukanVal');
-  if (need === 0) {
-    ksVal.textContent = '✓ 達成！';
-    ksVal.className = 'ks-val clear';
-  } else {
-    ksVal.innerHTML = `あと <span style="font-size:2.4rem">${need}</span> 日`;
-    ksVal.className = 'ks-val' + (done > 0 ? ' done' : '');
-  }
+  ksVal.innerHTML = need === 0 ? '達成！' : `あと <span>${need}</span> 日`;
+  ksVal.style.color = need === 0 ? 'var(--safe)' : 'var(--accent)';
 
   const list = document.getElementById('histList');
-  if (records.length === 0) {
-    list.innerHTML = '<p class="empty-msg">まだ記録がありません</p>';
-    return;
-  }
-  list.innerHTML = records.map((r, i) => {
-    const t = new Date(r.ts);
-    const time = `${t.getMonth()+1}/${t.getDate()} ${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
-    return `
+  list.innerHTML = records.length ? records.map((r, i) => `
     <div class="hist-item">
-      <div>
-        <div class="hist-info"><strong>${r.ml}ml × ${r.pct}%</strong> &nbsp; ${time}</div>
-      </div>
-      <div style="display:flex;align-items:center">
-        <span class="hist-g">${r.g.toFixed(1)}g</span>
-        <button class="hist-del" onclick="deleteDrink(${i})">✕</button>
-      </div>
-    </div>`;
-  }).reverse().join('');
+      <span>${r.ml}ml(${r.pct}%)</span>
+      <div><span class="hist-g">${r.g.toFixed(1)}g</span><button class="hist-del" onclick="deleteDrink(${i})">✕</button></div>
+    </div>`).reverse().join('') : '<p style="text-align:center;color:var(--muted);padding:10px;">記録なし</p>';
 }
 
 render();
